@@ -24,29 +24,41 @@ int main(int argc, char** argv)
 {
 	int repeat=0,old_n=0,i,l,avg_num=1,run=0,movement=1;
 	char* eptr;
-	float con_poly=0,con_par=0;
+	float con_poly=0,con_par=0,sticking_p = 1;
 	double *rdf1,*rdf2,*rdf3,*rdf4;
 	std::map<long,long> box_count_particles;
+    
 	l=200;
 	l=strtod(argv[1],&eptr);
 	std::cout<<"\nl = "<<l;
 	con_par=strtod(argv[2],&eptr);
+    
 	if(argc>3)
 	{
 		con_poly=strtod(argv[3],&eptr);
 		if(argc>4)
-			avg_num = strtol(argv[4],&eptr,10);
+			{
+                avg_num = strtol(argv[4],&eptr,10);
+                if(argc>5)
+                    sticking_p = strtod(argv[5],&eptr);
+            }
 	}
+    
 	std::cout<<"\nparticle concentration = "<<con_par;
 	std::cout<<"\npolymer concentration = "<<con_poly;
 	std::cout<<"\nNumber of runs = "<<avg_num;
-	space space1(con_poly,con_par,l);
+    std::cout<<"\nSticking Probability = "<<sticking_p;
+    
+	space space1(con_poly,con_par,l,sticking_p);
+    
 	space1.r_max = l/3;
 	space1.dr = 1;
+    
 	rdf1 = new double [int(space1.r_max/space1.dr)];
 	rdf2 = new double [int(space1.r_max/space1.dr)];
 	rdf3 = new double [int(space1.r_max/space1.dr)];
 	rdf4 = new double [int(space1.r_max/space1.dr)];
+    
 	while(run++ < avg_num)
 	{
 		std::cout<<"\n\n\nSimulation "<<run;
@@ -56,17 +68,12 @@ int main(int argc, char** argv)
 	space1.place_mols();
 	printf("\nNumber of molecules is %d",space1.num_nano+space1.num_plmr);
 	printf("\n\nStarting Simulation with %d clusters\n",space1.n_clusters);
-	//std::ofstream moment_ratios("moment_ratios.txt");
+	std::ofstream moment_ratios("moment_ratios.txt");
 	
 	while((old_n=space1.n_clusters)>0)
 	{
-		/*if(space1.check_for_duplicates())
-		{
-			std::cout<<"Overlap found";
-			break;
-		}*/
 		movement = space1.simulate();
-		//moment_ratios<<(space1.find_moment(3)/space1.find_moment(2))<<"\n";
+		moment_ratios<<(space1.find_moment(2)/space1.find_moment(1))<<"\n";
 		if(old_n==space1.n_clusters)
 			repeat++;
 		else
@@ -77,7 +84,7 @@ int main(int argc, char** argv)
 		if(repeat >20 && movement == -1 && space1.n_clusters <= (space1.num_nano+space1.num_plmr)/20+20)
 			break;
 	}
-	//moment_ratios.close();
+	moment_ratios.close();
     space1.store();
     printf("\nSimulation %d Done",run);
 

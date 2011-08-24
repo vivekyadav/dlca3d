@@ -1,21 +1,25 @@
 import math
 import os
-import matplotlib
 import matplotlib.pyplot as plt
+import sys
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
 lines = []
-
-for i in os.listdir('.'):
-    if 'result_100_0.000' in i:
+location_dir = "."
+if (len(sys.argv)>1):
+        location_dir = sys.argv[1]
+if location_dir[-1] != '/':
+        location_dir = location_dir + '/'
+for i in os.listdir(location_dir):
+    if 'result' in i:
         n = 0
         sum_x = 0
         sum_y = 0
         sum_x_squared = 0
         sum_xy = 0
 
-        f=open(i+"/RvsN.txt",'r')
+        f=open(location_dir+i+"/RvsN.txt",'r')
         vector_x=[];vector_y = []
         while 1:
             s=f.readline()

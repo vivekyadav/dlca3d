@@ -1,6 +1,5 @@
 #ifndef _SPACE_H_
 #define _SPACE_H_
-#endif
 
 
 #include <string>
@@ -46,14 +45,14 @@ class space
 public:
 	mol *molecules;
 	int num_plmr,num_nano;
-	float conc_plmr,conc_nano;
+	float conc_plmr,conc_nano,sticking_p;
 	int ***sites;
     int n_clusters,l;//count starts from 0;
     double r_max,dr;
     
     void initialize();
     space();    
-    space(float ,float ,int );   
+    space(float ,float ,int,float );   
 	void set_sim_num(int);
 
     void place_nano(int start,int num,std::string type);
@@ -89,3 +88,4 @@ public:
 	void move_cluster(int cID,int direction,int);
 	void clear();
 };
+#endif

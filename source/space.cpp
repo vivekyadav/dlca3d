@@ -121,9 +121,10 @@ space::space()
 	initialize();
 }
 
-space::space(float concen_plmr,float concen_nano,int len)
+space::space(float concen_plmr,float concen_nano,int len,float sp)
 {
 	conc_plmr=concen_plmr;conc_nano=concen_nano;l=len;dx[0]=-1;dx[1]=1;
+    sticking_p = sp;
 	initialize();
 }
 
@@ -619,7 +620,10 @@ int space::check(int mol1, int mol2,int direction)
     {
         if(type2=="nano")
         {
-            add_cluster(molecules[mol2].cID);
+            if(rand()/float(RAND_MAX) <= sticking_p)
+                add_cluster(molecules[mol2].cID);
+            else
+                return -1;
         }
         else
         {
@@ -627,8 +631,8 @@ int space::check(int mol1, int mol2,int direction)
             if(direction>2*D-1)
                 direction-=2*D;
 
-            if(molecules[mol2].con[direction]==-9)
-            {
+            if(molecules[mol2].con[direction]==-9 and (rand()/float(RAND_MAX) <= sticking_p))
+            {                
                 connections(mol2,direction,mol1);
 
                 molecules[mol2].cID=cluster1;
@@ -648,7 +652,7 @@ int space::check(int mol1, int mol2,int direction)
     {
         if(type2=="nano")
         {
-            if(molecules[mol1].con[direction]==-9)
+            if(molecules[mol1].con[direction]==-9 and (rand()/float(RAND_MAX) <= sticking_p))
             {
                 connections(mol1,direction,mol2);
 
