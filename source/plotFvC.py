@@ -12,6 +12,8 @@ if (len(sys.argv)>1):
         location_dir = sys.argv[1]
 if location_dir[-1] != '/':
         location_dir = location_dir + '/'
+slope = []
+conc = []
 for i in os.listdir(location_dir):
     if 'result' in i:
         n = 0
@@ -43,15 +45,11 @@ for i in os.listdir(location_dir):
             else:
                 break
 
-        slope = (sum_xy - sum_x*sum_y/n) / (sum_x_squared - sum_x**2/n)
-        intercept = (sum_y - slope*sum_x) / n
-        bestline_x = [0,10]
-        bestline_y = [intercept,10*slope+intercept]
-
-        #ax.plot(vector_x,vector_y, 'o')
+        slope.append((sum_xy - sum_x*sum_y/n) / (sum_x_squared - sum_x**2/n))
         m = re.match(r'result_(\d+)_([0-9.]*)_([0-9.]*)_(\d+)',i)
-        l, =ax.plot(bestline_x,bestline_y,'-',label = str(slope)+",conc="+m.group(3))
-        lines.append(l)
+        conc.append(float(m.group(3)))
 #ax.set_title("BOx Length Vs Number of particles.\nline of best fit: slope= %f  intercept= %f" % (slope, intercept))
+print slope, conc
+ax.plot(conc,slope,'-')
 ax.legend(lines,[l.get_label() for l in lines],loc='upper left')
 plt.show()

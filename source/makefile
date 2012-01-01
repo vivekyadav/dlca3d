@@ -14,9 +14,6 @@ main.o: main.cpp space.h box.h
 	
 space.o: space.cpp space.h
 	g++ -c space.cpp
-
-findD: findD.cpp
-	g++ findD.cpp -o findD
 	
-multirun: multirun.cpp simulation findD
+multirun: multirun.cpp simulation
 	g++ multirun.cpp -o multirun
