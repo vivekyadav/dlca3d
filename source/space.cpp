@@ -92,10 +92,10 @@ float space::find_rG(int c_id)
 	return clusters[c_id]->rG;
 }
 
-void space::find_all_rG()
+void space::find_all_rG(int time)
 {
 	std::map<int,cluster*>::iterator it;
-	std::fstream data("RvsN.txt",std::fstream::out | std::fstream::app);
+	std::fstream data((std::string("System_States/RvsN")+intToString(time)).c_str(),std::fstream::out | std::fstream::app);
 	it=clusters.begin();
 	float rg=0;
 	while(it!=clusters.end())
@@ -127,27 +127,47 @@ space::space(float concen_plmr,float concen_nano,int len,float sp)
     sticking_p = sp;
 	initialize();
 }
+std::string intToString(int i)
+{
+    std::stringstream ss;
+    std::string s;
+    ss << i;
+    s = ss.str();
 
+    return s;
+}
+int space::create_dir(int index)
+{
+    std::string command("mkdir ");
+	std::string dirname("System_States/system");	
+	dirname += intToString(index);
+	command += (dirname + "\n");
+	system(command.c_str());//Make a new directory to store current system state
+    this->dir_name = dirname;
+}
 void space::store()
 {
     int i,j,n;
     std::ofstream store_file1,store_file2;
-    //char* filename="space.txt";
-
     n=num_plmr+num_nano;
-    store_file1.open("nano.txt");
-	store_file2.open("plmr.txt");
+	//open files in the newly created directory
+    store_file1.open((dir_name+"/nano.txt").c_str());
+    if( store_file1.fail())
+        std::cerr<<"\nFailed to open file"<<(dir_name+"/nano.txt").c_str();
+	store_file2.open((dir_name+"/plmr.txt").c_str());
 	
     for(i=0;i<n;i++)
     {
 		if(molecules[i].mol_type=="nano")
 		{
+			store_file1<<i<<" ";
 			for(j=0;j<D;j++)
 				store_file1<<molecules[i].x[j]<<" ";
 			store_file1<<"\n";            
 		}
 		else
 		{
+			store_file2<<i<<" ";
 			for(j=0;j<D;j++)
 				store_file2<<molecules[i].x[j]<<" ";
 			store_file2<<"\n";
@@ -156,6 +176,17 @@ void space::store()
 
     store_file1.close();
     store_file2.close();
+	
+	store_file1.open((dir_name+"/clusters.txt").c_str());
+	std::map<int,cluster*>::iterator it;
+	for(it=clusters.begin(); it!=clusters.end(); it++)
+	{
+		for(i = 0;i < it->second->members.size();i++)
+		{
+			store_file1 << it->second->members[i] << " ";
+		}
+		store_file1 << "\n";
+	}
 }
 
 void space::store_rdf(char * filename,const double * rdf_arr)
@@ -171,26 +202,26 @@ void space::store_rdf(char * filename,const double * rdf_arr)
 }	
 void space::initialize()
 {
-        D=3;
+    D=3;
         
-        num_plmr=int(pow(double(l),D)*conc_plmr);
-        num_nano=int(pow(double(l),D)*conc_nano);
-		sites=new int**[l];
-        int j,i,total;
+    num_plmr=int(pow(double(l),D)*conc_plmr);
+    num_nano=int(pow(double(l),D)*conc_nano);
+	sites=new int**[l];
+    int j,i,total;
         
-		total=num_plmr+num_nano;
-        for(i=0;i<l;i++)
-        {
-            sites[i]=new int*[l];
-			for(j=0;j<l;j++)
-				sites[i][j]=new int[l];
-        }
-        molecules = new mol[total];
-        for( i=0;i<total;i++)
-		{
-			clusters[i]=new cluster;
-			//printf("\n%d, %d",i,clusters.find(i)->second->n_members);
-		}
+	total=num_plmr+num_nano;
+    for(i=0;i<l;i++)
+    {
+        sites[i]=new int*[l];
+		for(j=0;j<l;j++)
+			sites[i][j]=new int[l];
+    }
+    molecules = new mol[total];
+    for( i=0;i<total;i++)
+	{
+		clusters[i]=new cluster;
+		//printf("\n%d, %d",i,clusters.find(i)->second->n_members);
+	}
 }
 void space::clear_clusters()
 {

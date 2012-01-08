@@ -1,6 +1,12 @@
 import matplotlib.pyplot as plt
+import sys
 
-s = [float(i) for i in open("moment_ratios.txt").read().split()]
+location_dir = "."
+if (len(sys.argv)>1):
+        location_dir = sys.argv[1]
+if location_dir[-1] != '/':
+        location_dir = location_dir + '/'
+s = [float(i) for i in open(location_dir+"moment_ratios.txt").read().split()]
 fig = plt.figure()
 ax = fig.add_subplot(111)
 

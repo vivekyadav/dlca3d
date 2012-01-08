@@ -3,13 +3,10 @@
 
 all : multirun
 
-simulation: main.o space.o box.o
-	g++ main.o space.o box.o -o simulation
+simulation: main.o space.o
+	g++ main.o space.o -o simulation
 	
-box.o: box.cpp box.h
-	g++ -c box.cpp
-	
-main.o: main.cpp space.h box.h
+main.o: main.cpp space.h
 	g++ -c main.cpp
 	
 space.o: space.cpp space.h

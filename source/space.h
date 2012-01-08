@@ -49,6 +49,7 @@ public:
 	int ***sites;
     int n_clusters,l;//count starts from 0;
     double r_max,dr;
+    std::string dir_name;
     
     void initialize();
     space();    
@@ -77,7 +78,7 @@ public:
 	void clean_unused_clusters();
 	void find_cM(int);
 	float find_rG(int);
-	void find_all_rG();
+	void find_all_rG(int);
 	void connections(int,int,int);
 	void rdf(int, int, int, int,double,double *);
 	void find_interior_particles(std::vector<int> &,double,const int&,const int&);
@@ -87,5 +88,7 @@ public:
 	int can_cluster_move(int cID,int direction,int);
 	void move_cluster(int cID,int direction,int);
 	void clear();
+    int create_dir(int);
 };
+std::string intToString(int i);
 #endif

@@ -1,12 +1,18 @@
 import math
 import os
+import sys
 import matplotlib
 import matplotlib.pyplot as plt
+
+if len(sys.argv) < 2:
+	print "\nUsage : "+sys.argv[0]+" [directory name]"
+	exit(0)
+
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
 
-for i in os.listdir('.'):
+for i in os.listdir(sys.argv[1]):
     if 'rdf_' in i:
         n = 0
         sum_x = 0
@@ -14,12 +20,14 @@ for i in os.listdir('.'):
         sum_x_squared = 0
         sum_xy = 0
 
-        f=open(i,'r')
+        f=open(sys.argv[1]+i,'r')
         vector_x=[];vector_y = []
         while 1:
             s=f.readline()
             if(s):
                 data = s.split()
+                if float(data[0]) == 0 or float(data[1]) == 0:
+                    continue
                 x = (float(data[0]))
                 y = (float(data[1]))
                 vector_x.append(x);vector_y.append(y)
