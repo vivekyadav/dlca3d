@@ -29,11 +29,11 @@ for i in os.listdir(location_dir):
                 if len(data) != 2:
                     continue
                 if float(data[0])<=0 or float(data[1])< 10:
-					continue
+                    continue
                 x = math.log(float(data[0]))
                 y = math.log(float(data[1]))
                 if y/x < 2:
-					continue
+                    continue
                 vector_x.append(x);vector_y.append(y)
                 n += 1
                 sum_x += x
