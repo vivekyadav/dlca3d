@@ -50,8 +50,8 @@ Move the plotnano.py file to *System_States/system1* and run it. You'll get a vi
 
 ![64 particles - 10x10](https://user-images.githubusercontent.com/666808/52552879-93d40200-2d96-11e9-8d70-770908887978.png)
 
-There are a bunch of other files generated in system folders.
-nano.txt - co-ordinates of particles of type 1
-plmr.txt - co-ordinates of particles of type 2
+There are a bunch of other files generated in system folders:
+* nano.txt - co-ordinates of particles of type 1
+* plmr.txt - co-ordinates of particles of type 2
 
 *I'll try to add more documentation later if possible*
